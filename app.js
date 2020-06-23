@@ -75,9 +75,10 @@ const startApp = () => {
         case "Add New Role":
           addNewRole();
           break;
+          
         case "View Roles":
-            viewRoles();
-            break;
+          viewRoles();
+          break;
           
         case "Remove Employee":
           removeEmployee();
@@ -377,27 +378,43 @@ function removeEmployee() {
   });
 }
 
-// function removeEmployee() {
-//   let employeeList = [];
-//   connection.query("SELECT employee.first_name, employee.last_name FROM employee", (err, res) => {
-//     for (let i = 0; i < res.length; i++) {
-//       employeeList.push(res[i].first_name + " " + res[i].last_name);
-//     }
-//     inquirer
-//       .prompt([
-//         {
-//           type: "list",
-//           name: "employeeName",
-//           message: "Which employee do you want to delete?",
-//           choices: employeeList,
-//         },
-//       ])
-//       .then(function (answer) {
-//         connection.query(`DELETE FROM employee WHERE concat(first_name, ' ' ,last_name) = '${answer.employeeName}'`, function (err, res) {
-//           if (err) throw err;
-//           console.log("Employee deleted!\n");
-//           startApp();
-//         });
-//       });
-//   });
-// }
+function updateEmployeeManager() {
+  connection.query("SELECT * FROM employee where manager_id is not null;", (err, results) => {
+    inquirer
+      .prompt([
+        {
+          type: "list",
+          name: "employee",
+          message: "Which employee needs a new manager?",
+          choices: results.map((employee) => {
+            return { name: employee.first_name + " " + employee.last_name, value: employee.id };
+          }),
+        },
+      ])
+        .then((response) => {
+          let index = results.findIndex(result => result.id === response.employee)
+        connection.query("SELECT * FROM employee WHERE manager_id is null AND id <> ?", [results[index].manager_id], (err, results) => {
+          inquirer
+            .prompt([
+              {
+                type: "list",
+                name: "manager",
+                message: "Who will be the new manager?",
+                choices: results.map((employee) => {
+                  return { name: employee.first_name + " " + employee.last_name, value: employee.id };
+                }),
+              },
+            ])
+            .then((answers) => {
+              connection.query("UPDATE employee SET manager_id = ? WHERE  id = ? ", [answers.manager, response.employee], (err, results) => {
+                if (err) {
+                  console.log(err, "error!");
+                }
+                console.log("Employee manager Updated!");
+                startApp();
+              });
+            });
+        });
+      });
+  });
+}
