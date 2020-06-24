@@ -40,13 +40,14 @@ const startApp = () => {
         "Add New Role",
         "View Roles",
         "Remove Employee",
+        "Remove Role",
         "Update Employee role",
         "Update Employee Manager",
         "View Department Budget",
         "Exit",
       ],
     })
-    .then(function (answer) {
+    .then((answer)=> {
       switch (answer.Base) {
         //   Need to create all case functions
         case "View All Employees":
@@ -76,27 +77,31 @@ const startApp = () => {
         case "Add New Role":
           addNewRole();
           break;
-          
+
         case "View Roles":
           viewRoles();
           break;
-          
+
         case "Remove Employee":
           removeEmployee();
-              break;
-          
+          break;
+
+        case "Remove Role":
+          removeRole();
+          break;
+
         case "Update Employee role":
           updateEmployeeRole();
-              break;
-          
+          break;
+
         case "Update Employee Manager":
           updateEmployeeManager();
-              break;
-          
+          break;
+
         case "View Department Budget":
-              viewDepartmentBudget();
-              break;
-          
+          viewDepartmentBudget();
+          break;
+
         case "Exit":
           connection.end();
           process.exit();
@@ -129,7 +134,7 @@ const showAllByDept = () => {
           return { name: department.name, value: department.id };
         }),
       })
-      .then((response)=> {
+      .then(response => {
         connection.query(
           `SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, 
             department.name AS department, concat(manager.first_name, " ", manager.last_name) AS Manager 
@@ -158,7 +163,7 @@ const showAllByManager=()=> {
           return { name: employee.first_name + " " + employee.last_name, value: employee.id };
         }),
       })
-      .then((response)=> {
+      .then(response => {
         connection.query(
           `SELECT employee.id,employee.first_name, employee.last_name, role.title, role.salary, 
                     department.name AS department, concat(manager.first_name, " ", manager.last_name) AS Manager 
@@ -176,7 +181,7 @@ const showAllByManager=()=> {
   });
 }
 
- addEmployee=()=> {
+const addEmployee=()=> {
   connection.query("SELECT * FROM role", (err, res) => {
     inquirer
       .prompt([
@@ -211,7 +216,7 @@ const showAllByManager=()=> {
               message: "Who is their manager?",
             })
 
-            .then((answer)=> {
+            .then(answer => {
               connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)", [res.firstName, res.lastName, res.role, answer.manager], (err, data)=> {
                 if (err) throw err;
                 console.log("New Employee added!");
@@ -233,7 +238,7 @@ const addNewDepartment=()=> {
       },
     ])
     .then((res)=> {
-      connection.query("INSERT INTO department (name) VALUES (?)", [res.department], (err, data)=> {
+      connection.query("INSERT INTO department (name) VALUES (?)", [res.department], (err, res)=> {
         if (err) throw err;
         console.table("New Department added!");
         startApp();
@@ -275,7 +280,7 @@ const addNewRole=()=> {
           }),
         },
       ])
-      .then((response)=> {
+      .then(response => {
         connection.query("INSERT INTO role (title, salary, department_id) VALUES (?,?,?)", [response.role, response.salary, response.department], (err, res)=> {
           if (err) throw err;
           console.log("New Role added to role table");
@@ -285,6 +290,7 @@ const addNewRole=()=> {
   });
 }
 
+
 const viewRoles=()=> {
   console.log("View all Roles");
   connection.query("SELECT * FROM role", (err, res) => {
@@ -293,6 +299,7 @@ const viewRoles=()=> {
     startApp();
   });
 }
+
 
 const removeEmployee=()=> {
   connection.query("select * from employee;", (err, res) => {
@@ -305,7 +312,7 @@ const removeEmployee=()=> {
           return { name: employee.first_name + " " + employee.last_name, value: employee.id };
         }),
       })
-      .then(function (response) {
+      .then(response => {
         connection.query(`DELETE FROM employee WHERE id=${response.employeeSearch}`, (err, res)=> {
           if (err) throw err;
           console.log("Employee Removed");
@@ -314,6 +321,28 @@ const removeEmployee=()=> {
       });
   });
 }
+
+const removeRole = () => {
+  connection.query("select * from role", (err, res) => {
+    inquirer
+      .prompt({
+        name: "roleSearch",
+        type: "list",
+        message: "Which role would you like to remove?",
+        choices: res.map((role) => {
+          return { name: role.title, value: role.id };
+        }),
+      })
+      .then(response => {
+        connection.query(`DELETE FROM role WHERE id=${response.roleSearch}`, (err, res) => {
+          if (err) throw err;
+          console.log("Role Removed");
+          startApp();
+        });
+      });
+  });
+};
+
 
 const updateEmployeeRole=()=> {
   connection.query("SELECT * FROM employee", (err, results) => {
@@ -328,7 +357,7 @@ const updateEmployeeRole=()=> {
           }),
         },
       ])
-      .then((response) => {
+      .then(response => {
         connection.query("SELECT * FROM role", (err, results) => {
           inquirer
             .prompt([
@@ -341,8 +370,8 @@ const updateEmployeeRole=()=> {
                 }),
               },
             ])
-            .then((answers) => {
-              connection.query("UPDATE employee SET role_id = ? WHERE  id = ? ", [answers.role, response.employee], (err, res) => {
+            .then(answer => {
+              connection.query("UPDATE employee SET role_id = ? WHERE  id = ? ", [answer.role, response.employee], (err, res) => {
                 if (err) {
                   console.log(err, "error!");
                 }
@@ -370,7 +399,7 @@ const updateEmployeeManager=()=> {
           }),
         },
       ])
-        .then((response) => {
+        .then(response => {
           let index = results.findIndex(result => result.id === response.employee)
         connection.query("SELECT * FROM employee WHERE manager_id is null AND id <> ?", [results[index].manager_id], (err, results) => {
           inquirer
@@ -384,8 +413,8 @@ const updateEmployeeManager=()=> {
                 }),
               },
             ])
-            .then((answers) => {
-              connection.query("UPDATE employee SET manager_id = ? WHERE  id = ? ", [answers.manager, response.employee], (err, res) => {
+            .then(answer => {
+              connection.query("UPDATE employee SET manager_id = ? WHERE  id = ? ", [answer.manager, response.employee], (err, res) => {
                 if (err) {
                   console.log(err, "error!");
                 }
