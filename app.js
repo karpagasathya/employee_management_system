@@ -41,6 +41,7 @@ const startApp = () => {
         "View Roles",
         "Remove Employee",
         "Remove Role",
+        "Remove Department",
         "Update Employee role",
         "Update Employee Manager",
         "View Department Budget",
@@ -88,6 +89,10 @@ const startApp = () => {
 
         case "Remove Role":
           removeRole();
+          break;
+
+        case "Remove Department":
+          removeDepartment();
           break;
 
         case "Update Employee role":
@@ -342,6 +347,27 @@ const removeRole = () => {
       });
   });
 };
+
+const removeDepartment = () => {
+  connection.query("select * from department", (err, res) => {
+    inquirer
+      .prompt({
+        name: "departmentSearch",
+        type: "list",
+        message: "Which department would you like to remove?",
+        choices: res.map((department) => {
+          return { name: department.name, value: department.id };
+        }),
+      })
+      .then((response) => {
+        connection.query(`DELETE FROM department WHERE id=${response.departmentSearch}`, (err, res) => {
+          if (err) throw err;
+          console.log("Department Removed!");
+          startApp();
+        });
+      });
+  });
+}
 
 
 const updateEmployeeRole=()=> {
