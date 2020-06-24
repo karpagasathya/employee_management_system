@@ -114,7 +114,7 @@ const startApp = () => {
     });
 };
 
-
+// Viewing all employees in the table 
 const showAllEmployees=()=> {
   console.log("Viewing all employees");
   connection.query(
@@ -128,6 +128,7 @@ const showAllEmployees=()=> {
   );
 }
 
+//Viewing employees by Department
 const showAllByDept = () => {
   connection.query("select * from department", (err, res) => {
     inquirer
@@ -157,6 +158,7 @@ const showAllByDept = () => {
   });
 }
 
+//Viewing all employees by Manager name
 const showAllByManager=()=> {
   connection.query("select * from employee where manager_id is null;", (err, res) => {
     inquirer
@@ -186,6 +188,7 @@ const showAllByManager=()=> {
   });
 }
 
+//Adding new employee to Employee table
 const addEmployee=()=> {
   connection.query("SELECT * FROM role", (err, res) => {
     inquirer
@@ -233,6 +236,7 @@ const addEmployee=()=> {
   });
 }
 
+//Adding new Departments to department table
 const addNewDepartment=()=> {
   inquirer
     .prompt([
@@ -251,7 +255,7 @@ const addNewDepartment=()=> {
     });
 }
 
-
+// View all Departments
 const viewDepartments=()=> {
   console.log("View all departments");
   connection.query("SELECT * FROM department", (err, res) => {
@@ -261,7 +265,7 @@ const viewDepartments=()=> {
   });
 }
 
-
+//Adding new role to role table with salary
 const addNewRole=()=> {
   connection.query("SELECT * FROM department", (err, res) => {
     inquirer
@@ -295,7 +299,7 @@ const addNewRole=()=> {
   });
 }
 
-
+//Viewing all roles from role table
 const viewRoles=()=> {
   console.log("View all Roles");
   connection.query("SELECT * FROM role", (err, res) => {
@@ -305,7 +309,7 @@ const viewRoles=()=> {
   });
 }
 
-
+// Deleting specific Employee from employee table
 const removeEmployee=()=> {
   connection.query("select * from employee;", (err, res) => {
     inquirer
@@ -327,6 +331,7 @@ const removeEmployee=()=> {
   });
 }
 
+// Deleting certain role from role table
 const removeRole = () => {
   connection.query("select * from role", (err, res) => {
     inquirer
@@ -348,6 +353,7 @@ const removeRole = () => {
   });
 };
 
+// Deleting certain department
 const removeDepartment = () => {
   connection.query("select * from department", (err, res) => {
     inquirer
@@ -369,7 +375,7 @@ const removeDepartment = () => {
   });
 }
 
-
+// Updating Employee's role
 const updateEmployeeRole=()=> {
   connection.query("SELECT * FROM employee", (err, results) => {
     inquirer
@@ -411,7 +417,7 @@ const updateEmployeeRole=()=> {
 }
 
 
-
+// Changing Employee's Manager
 const updateEmployeeManager=()=> {
   connection.query("SELECT * FROM employee where manager_id is not null;", (err, results) => {
     inquirer
@@ -453,7 +459,7 @@ const updateEmployeeManager=()=> {
   });
 }
 
-
+// Viewing all department total budgets
 const viewDepartmentBudget=()=> {
    console.log("View all Departments Budget");
    connection.query(`SELECT department.name AS department, SUM(role.salary) budget
