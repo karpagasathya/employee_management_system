@@ -5,7 +5,7 @@
 ## Description
 
 This Application is a command-line interface (CLI) that allows a user to keep track of employees through a company's database. The application uses MySQL to store, create and delete all employee information.
-This application manages a company's employees using node, inquirer, and MySQL. An employer will be able to add departments, employees, and roles with their corresponding information using prompts.
+This application manages a company's employees using node, inquirer, and MySQL. An employer will be able to add departments, employees, and roles with their corresponding information using prompts. You can view the Application demo [here](https://drive.google.com/file/d/1PeFjvZ3ODH6b3LBD6Hv4lcoUTpfUsa_c/view?usp=sharing).
 
 
 ## Table of Contents
