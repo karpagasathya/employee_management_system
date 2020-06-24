@@ -1,6 +1,5 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
-// const consoletable = require("console.table");
 
 // create the connection information for the sql database
 const connection = mysql.createConnection({
@@ -118,8 +117,10 @@ const startApp = () => {
 const showAllEmployees=()=> {
   console.log("Viewing all employees");
   connection.query(
-      `SELECT employee.id,employee.first_name, employee.last_name, role.title, role.salary, department.name AS department, concat(manager.first_name, " ", manager.last_name) AS Manager FROM role 
-        INNER JOIN department ON department.id = role.department_id RIGHT JOIN employee ON role.id = employee.role_id LEFT JOIN employee manager ON employee.manager_id = manager.id`,
+      `SELECT employee.id,employee.first_name, employee.last_name, role.title, role.salary, department.name AS department, 
+       concat(manager.first_name, " ", manager.last_name) AS Manager FROM role 
+       INNER JOIN department ON department.id = role.department_id RIGHT JOIN employee ON role.id = employee.role_id 
+       LEFT JOIN employee manager ON employee.manager_id = manager.id`,
      (err, res)=> {
       if (err) throw err;
       console.table(res);
@@ -227,7 +228,9 @@ const addEmployee=()=> {
             .then(answer => {
               connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)", [res.firstName, res.lastName, res.role, answer.manager], (err, data)=> {
                 if (err) throw err;
+                console.log("-------------------");
                 console.log("New Employee added!");
+                console.log("-------------------");
                 startApp();
               });
             });
@@ -249,7 +252,9 @@ const addNewDepartment=()=> {
     .then((res)=> {
       connection.query("INSERT INTO department (name) VALUES (?)", [res.department], (err, res)=> {
         if (err) throw err;
-        console.table("New Department added!");
+        console.log("---------------------");
+        console.log("New Department added!");
+        console.log("----------------------");
         startApp();
       });
     });
@@ -292,7 +297,9 @@ const addNewRole=()=> {
       .then(response => {
         connection.query("INSERT INTO role (title, salary, department_id) VALUES (?,?,?)", [response.role, response.salary, response.department], (err, res)=> {
           if (err) throw err;
+          console.log("----------------------------");
           console.log("New Role added to role table");
+          console.log("----------------------------");
           startApp();
         });
       });
@@ -324,7 +331,9 @@ const removeEmployee=()=> {
       .then(response => {
         connection.query(`DELETE FROM employee WHERE id=${response.employeeSearch}`, (err, res)=> {
           if (err) throw err;
+          console.log("-----------------");
           console.log("Employee Removed");
+          console.log("-----------------");
           startApp();
         });
       });
@@ -346,7 +355,9 @@ const removeRole = () => {
       .then(response => {
         connection.query(`DELETE FROM role WHERE id=${response.roleSearch}`, (err, res) => {
           if (err) throw err;
+          console.log("-------------");
           console.log("Role Removed");
+          console.log("-------------");
           startApp();
         });
       });
@@ -368,7 +379,9 @@ const removeDepartment = () => {
       .then((response) => {
         connection.query(`DELETE FROM department WHERE id=${response.departmentSearch}`, (err, res) => {
           if (err) throw err;
+          console.log("---------------------");
           console.log("Department Removed!");
+          console.log("---------------------");
           startApp();
         });
       });
@@ -407,7 +420,9 @@ const updateEmployeeRole=()=> {
                 if (err) {
                   console.log(err, "error!");
                 }
-                console.log("Employee Role Updated!");
+                console.log("---------------------");
+                console.log("Employee Role Updated!")
+                console.log("---------------------");;
                 startApp();
               });
             });
@@ -450,7 +465,9 @@ const updateEmployeeManager=()=> {
                 if (err) {
                   console.log(err, "error!");
                 }
+                console.log("------------------------");
                 console.log("Employee manager Updated!");
+                console.log("------------------------");
                 startApp();
               });
             });
