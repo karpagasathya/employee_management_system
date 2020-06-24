@@ -3,7 +3,6 @@
 ![badge](https://img.shields.io/github/languages/top/karpagasathya/employee_management_system)
 
 ## Description
-This Application is a content managament system (CMS) application that uses the command line interface (CLI) to navigate through a MySQL database with employee information.
 
 This Application is a command-line interface (CLI) that allows a user to keep track of employees through a company's database. The application uses MySQL to store, create and delete all employee information.
 This application manages a company's employees using node, inquirer, and MySQL. An employer will be able to add departments, employees, and roles with their corresponding information using prompts.
@@ -45,6 +44,12 @@ Contributions are welcome. You can create an issue or submit a pull request.
 
 ## License
 
+MIT license
+
+## Screenshots
+
+![](image1.png)
+![](image2.png)
 
 
 
